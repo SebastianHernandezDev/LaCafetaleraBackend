@@ -20,8 +20,7 @@ public class Categoria {
     /// relacion 1:N categoria y producto
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
-//    @JsonManagedReference
-    @JsonIgnore
+    @JsonManagedReference
     private List<Producto> productoList = new ArrayList<>();
 
     /// constructor

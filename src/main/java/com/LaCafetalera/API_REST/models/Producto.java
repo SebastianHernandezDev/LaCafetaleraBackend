@@ -22,7 +22,7 @@ public class Producto {
 
     @ManyToOne
     @JoinColumn(name = "idCategoria")
-//    @JsonBackReference
+    @JsonBackReference
     private Categoria categoria;
 
 

@@ -3,7 +3,6 @@ package com.LaCafetalera.API_REST.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 @Entity
 public class DetallePedido {
 
@@ -13,7 +12,7 @@ public class DetallePedido {
 
     @ManyToOne
     @JoinColumn(name = "idPedido")
-//    @JsonBackReference
+    @JsonBackReference
     private Pedido pedido;
 
     @ManyToOne
@@ -25,72 +24,31 @@ public class DetallePedido {
     private int cantidad;
 
     @Column
-    private Long subtotal;
+    private Long subtotal = 0L;
 
-
-    /// constructores
-    public DetallePedido(){
-
-    }
+    // Constructor vacío
+    public DetallePedido(){}
 
     public DetallePedido(Pedido pedido, Producto producto, int cantidad) {
         this.pedido = pedido;
         this.producto = producto;
         this.cantidad = cantidad;
-        if(producto != null){
-            this.subtotal= producto.getPrecioUnitario()*cantidad;
-        }else{
-            this.subtotal=0L;
-        }
-
-
     }
 
-    /// setter y getters
-    public Long getIdDetallePedido() {
-        return idDetallePedido;
-    }
+    // Getters y setters (sin lógica de cálculo automático)
+    public Long getIdDetallePedido() { return idDetallePedido; }
+    public void setIdDetallePedido(Long idDetallePedido) { this.idDetallePedido = idDetallePedido; }
 
-    public void setIdDetallePedido(Long idDetallePedido) {
-        this.idDetallePedido = idDetallePedido;
-    }
+    public Pedido getPedido() { return pedido; }
+    public void setPedido(Pedido pedido) { this.pedido = pedido; }
 
-    public Pedido getPedido() {
-        return pedido;
-    }
+    public Producto getProducto() { return producto; }
+    public void setProducto(Producto producto) { this.producto = producto; }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
 
-    public Producto getProducto() {
-        return producto;
-    }
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-        if(producto!=null){
-            this.subtotal = producto.getPrecioUnitario()*this.cantidad;
-        }
-    }
-
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-        if(producto!=null){
-            this.subtotal= producto.getPrecioUnitario()*cantidad;
-        }
-    }
-    public Long getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(Long subtotal) {
-        this.subtotal = subtotal;
-    }
-
-
+    public Long getSubtotal() { return subtotal; }
+    public void setSubtotal(Long subtotal) { this.subtotal = subtotal; }
 }
+

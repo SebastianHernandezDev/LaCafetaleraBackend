@@ -1,5 +1,6 @@
 package com.LaCafetalera.API_REST.controllers;
 
+import com.LaCafetalera.API_REST.DTO.UsuarioDTO;
 import com.LaCafetalera.API_REST.models.Usuario;
 import com.LaCafetalera.API_REST.services.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,34 @@ public class UsuarioController {
 
 
     @PostMapping
-    public ResponseEntity<Usuario> save(@RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> save(@RequestBody UsuarioDTO usuarioDTO) {
+        // Convertir DTO a entidad
+        Usuario usuario = new Usuario(
+                usuarioDTO.getNombre(),
+                usuarioDTO.getApellido(),
+                usuarioDTO.getTelefono(),
+                usuarioDTO.getEmail(),
+                usuarioDTO.getContrasena()
+        );
         Usuario nuevoUsuario = usuarioService.save(usuario);
         return ResponseEntity.ok(nuevoUsuario);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> update(@PathVariable Long id, @RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> update(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         try {
-            Usuario actualizado = usuarioService.update(id, usuario);
+            // Buscar el usuario existente
+            Usuario usuarioExistente = usuarioService.getById(id)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Actualizar campos desde el DTO
+            usuarioExistente.setNombre(usuarioDTO.getNombre());
+            usuarioExistente.setApellido(usuarioDTO.getApellido());
+            usuarioExistente.setTelefono(usuarioDTO.getTelefono());
+            usuarioExistente.setEmail(usuarioDTO.getEmail());
+            usuarioExistente.setContrasena(usuarioDTO.getContrasena());
+
+            Usuario actualizado = usuarioService.save(usuarioExistente);
             return ResponseEntity.ok(actualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

@@ -1,5 +1,6 @@
 package com.LaCafetalera.API_REST.controllers;
 
+import com.LaCafetalera.API_REST.DTO.CategoriaDTO;
 import com.LaCafetalera.API_REST.models.Categoria;
 import com.LaCafetalera.API_REST.services.ICategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,25 @@ public class CategoriaController {
 
 
     @PostMapping
-    public ResponseEntity<Categoria> save(@RequestBody Categoria categoria) {
+    public ResponseEntity<Categoria> save(@RequestBody CategoriaDTO categoriaDTO) {
+        // Convertir DTO a entidad
+        Categoria categoria = new Categoria(categoriaDTO.getNombre());
         Categoria nuevaCategoria = categoriaService.save(categoria);
         return ResponseEntity.ok(nuevaCategoria);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> update(@PathVariable Long id, @RequestBody Categoria categoria) {
+    public ResponseEntity<Categoria> update(@PathVariable Long id, @RequestBody CategoriaDTO categoriaDTO) {
         try {
-            Categoria actualizada = categoriaService.update(id, categoria);
+            // Buscar categoría existente
+            Categoria categoriaExistente = categoriaService.getById(id)
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+            // Actualizar desde DTO
+            categoriaExistente.setNombreCategoria(categoriaDTO.getNombre());
+
+            Categoria actualizada = categoriaService.save(categoriaExistente);
             return ResponseEntity.ok(actualizada);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

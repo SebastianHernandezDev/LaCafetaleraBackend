@@ -24,7 +24,7 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Usuario> getById(Long id) {
+    public  Optional<Usuario> getById(Long id) {
         return usuarioRepository.findById(id);
     }
 

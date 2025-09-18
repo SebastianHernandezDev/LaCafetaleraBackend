@@ -31,8 +31,7 @@ public class Pedido {
     private Long total = 0L;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
-    @JsonIgnore
+   @JsonManagedReference
     private List<DetallePedido> detallePedidoList = new ArrayList<>();
 
     // Constructores
@@ -41,6 +40,13 @@ public class Pedido {
     public Pedido(Usuario usuario) {
         this.usuario = usuario;
         this.fechaPedido = new Date();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.fechaPedido == null) {
+            this.fechaPedido = new Date();
+        }
     }
 
     // Getters y setters

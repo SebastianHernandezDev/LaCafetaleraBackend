@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class PedidoService {
+public class PedidoService implements IPedidoService {
 
     @Autowired
     private IPedidoRepository pedidoRepository;
