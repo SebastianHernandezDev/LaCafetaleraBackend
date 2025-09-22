@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/productos")
 public class ProductoController {
@@ -35,7 +36,7 @@ public class ProductoController {
 
 
     @Autowired
-    private ICategoriaService categoriaService; // Necesitas inyectar esto también
+    private ICategoriaService categoriaService;
 
     @PostMapping
     public ResponseEntity<Producto> save(@RequestBody ProductoDTO productoDTO) {

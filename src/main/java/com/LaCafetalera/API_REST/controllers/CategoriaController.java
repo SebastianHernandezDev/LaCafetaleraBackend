@@ -34,7 +34,7 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<Categoria> save(@RequestBody CategoriaDTO categoriaDTO) {
-        // Convertir DTO a entidad
+
         Categoria categoria = new Categoria(categoriaDTO.getNombre());
         Categoria nuevaCategoria = categoriaService.save(categoria);
         return ResponseEntity.ok(nuevaCategoria);
@@ -44,11 +44,11 @@ public class CategoriaController {
     @PutMapping("/{id}")
     public ResponseEntity<Categoria> update(@PathVariable Long id, @RequestBody CategoriaDTO categoriaDTO) {
         try {
-            // Buscar categoría existente
+
             Categoria categoriaExistente = categoriaService.getById(id)
                     .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-            // Actualizar desde DTO
+
             categoriaExistente.setNombreCategoria(categoriaDTO.getNombre());
 
             Categoria actualizada = categoriaService.save(categoriaExistente);

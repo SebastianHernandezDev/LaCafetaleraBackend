@@ -37,43 +37,33 @@ public class DetallePedidoService {
     private IPedidoRepository pedidoRepository;
 
     public DetallePedido save(DetallePedido detallePedido) {
-        // Buscar el pedido en BD
+        // 1. Buscar el pedido en BD
         var pedidoBD = pedidoRepository.findById(detallePedido.getPedido().getId())
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        // Buscar el producto en BD
+        // 2. Buscar el producto en BD
         var productoBD = productoRepository.findById(detallePedido.getProducto().getId())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-        // Reemplazar los objetos incompletos por los de BD
+        // 3. Reemplazar los objetos incompletos por los de BD
         detallePedido.setPedido(pedidoBD);
         detallePedido.setProducto(productoBD);
 
-        // Calcular subtotal
+        // 4. Calcular subtotal
         detallePedido.setSubtotal(productoBD.getPrecioUnitario() * detallePedido.getCantidad());
 
-        return detallePedidoRepository.save(detallePedido);
-    }
-    public DetallePedido crearDetallePedido(DetallePedido detalle) {
-        // 1. Traer producto desde BD
-        Producto producto = productoRepository.findById(detalle.getProducto().getId())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        // 5. Guardar el detalle
+        DetallePedido detalleGuardado = detallePedidoRepository.save(detallePedido);
 
-        // 2. Calcular subtotal
-        detalle.setSubtotal(producto.getPrecioUnitario() * detalle.getCantidad());
-
-        // 3. Guardar el detalle
-        DetallePedido detalleGuardado = detallePedidoRepository.save(detalle);
-
-        // 4. Actualizar el total del pedido sumando TODOS los detalles
-        Pedido pedido = detalleGuardado.getPedido();
-        Long total = detallePedidoRepository.findByPedidoId(pedido.getId())
+        // 6. Actualizar el total del pedido sumando TODOS los detalles desde BD
+        Long nuevoTotal = detallePedidoRepository.findByPedidoId(pedidoBD.getId())
                 .stream()
                 .mapToLong(DetallePedido::getSubtotal)
                 .sum();
 
-        pedido.setTotal(total);
-        pedidoRepository.save(pedido);
+        // 7. Actualizar total en BD
+        pedidoBD.setTotal(nuevoTotal);
+        pedidoRepository.save(pedidoBD);
 
         return detalleGuardado;
     }

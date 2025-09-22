@@ -1,10 +1,15 @@
 package com.LaCafetalera.API_REST.controllers;
 
+import com.LaCafetalera.API_REST.DTO.LoginRequest;
 import com.LaCafetalera.API_REST.DTO.UsuarioDTO;
 import com.LaCafetalera.API_REST.models.Usuario;
 import com.LaCafetalera.API_REST.services.IUsuarioService;
+import com.LaCafetalera.API_REST.services.JwtService;
+import com.LaCafetalera.API_REST.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +20,15 @@ public class UsuarioController {
 
     @Autowired
     private IUsuarioService usuarioService;
+
+    @Autowired
+    private UsuarioService usuarioDetailsService;
+
+    @Autowired // Añade esta línea
+    private JwtService jwtService; // Añade esta línea
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
 
     @GetMapping
@@ -77,4 +91,19 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        Usuario usuario = usuarioService.findByEmail(loginRequest.getEmail());
+
+        if (usuario != null && passwordEncoder.matches(loginRequest.getPassword(), usuario.getContrasena())) {
+            UserDetails userDetails = usuarioDetailsService.loadUserByUsername(usuario.getEmail());
+            String token = jwtService.generateToken(userDetails);
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(401).body("Credenciales inválidas");
+        }
+    }
+
 }

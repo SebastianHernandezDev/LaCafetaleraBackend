@@ -31,6 +31,9 @@ public class Usuario {
 
     @Column(nullable = false)
     private String contrasena;
+/////////////////////////////////////////////////////////
+    @Column(nullable = false)
+    private boolean habilitado = true;
 
 
 
@@ -102,5 +105,15 @@ public class Usuario {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    ///   ///////////////////////////////////////////////////////
+
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
     }
 }

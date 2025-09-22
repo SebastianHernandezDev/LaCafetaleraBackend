@@ -2,7 +2,6 @@ package com.LaCafetalera.API_REST.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -35,7 +34,9 @@ public class Producto {
     @Lob
     private String descripcion;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String imagen;
+
 
 
 
